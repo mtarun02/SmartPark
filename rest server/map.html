@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+       #map {
+        height: 800px;
+        width: 100%;
+       }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <h3>Parking Demo</h3>
+    <button id="show">Show from Current Location</button>
+    <button id="add">I'm Leaving</button>
+    <div id="map"></div>
+    <script>
+      function initMap() {
+        var directionsService = new google.maps.DirectionsService();
+        var directionsDisplay = new google.maps.DirectionsRenderer();
+
+        var uluru = {lat: 39.9522382, lng: -75.19108799999998};
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 17,
+          center: uluru
+        });
+
+        directionsDisplay.setMap(map);
+
+        function calcRoute(start, end) {
+          var request = {
+            origin: start,
+            destination: end,
+            travelMode: 'DRIVING'
+          };
+          directionsService.route(request, function(result, status) {
+            if (status == 'OK') {
+              clearMarkers();
+              directionsDisplay.setDirections(result);
+            }
+          });
+        }
+
+        markers = [];
+
+        var main = new google.maps.Marker({
+          position: uluru,
+          map: map,
+          draggable: true
+        });
+
+
+        markers.push(main);
+
+        map.addListener('click',function(event){
+          setMarker(event.latLng);
+        })
+
+        function setMarker(l){
+          clearMarkers();
+          directionsDisplay.setDirections({routes: []});
+          var marker = new google.maps.Marker({
+            position: l,
+            map: map,
+            draggable: true
+          });
+          main = marker;
+          markers.push(marker);
+        }
+
+        function clearMarkers(){
+          for(let i = 0; i < markers.length; i++){
+            markers[i].setMap(null);
+          }
+          markers = [];
+        }
+
+        function markersSet(){
+          for(let i = 0; i < markers.length; i++){
+            markers[i].addListener('click',function(){
+              map.setCenter(main.getPosition());
+              calcRoute(main.getPosition(),this.getPosition());
+            });
+            markers[i].setMap(map);
+          }
+        }
+
+        $("#show").on("click",function(e){
+          $.get(
+            "/api/"+ main.getPosition().lng() + "/" + main.getPosition().lat(),
+            function(data){
+              for(var i = 0; i < data.length; i++){
+                let park = data[i];
+                let info = {lat:park.latitude, lng:park.longitude}
+                let marker = new google.maps.Marker({
+                  position: info,
+                  map: map
+                });
+                markers.push(marker);
+              }
+              markersSet();
+            });
+        });
+
+        $("#add").on("click",function(e){
+          let info = {latitude:main.getPosition().lat(),longitude:main.getPosition().lng()};
+          $.ajax({
+            url: "/api/add",
+            type: "POST",
+            data: info,
+            success: function(d){
+                clearMarkers();
+            }
+          });
+        });
+      }
+
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgJWu-S55kDEZWM9k_yZo7-gOCdrYahTg&callback=initMap">
+    </script>
+  </body>
+</html>
