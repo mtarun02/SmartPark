@@ -1,8 +1,97 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.tarunmattikalli.parkingapp.MapsActivity" />
+    tools:context=".MapsActivity" >
+
+    <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="20"
+        android:scrollbars="vertical"
+        class="com.google.android.gms.maps.SupportMapFragment"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Thes buttons below are for the top two buttons
+
+
+
+
+
+
+
+
+
+
+    <RadioGroup
+        android:id="@+id/radio_group_list_selector"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:layout_gravity="top">
+
+
+
+
+
+
+        //some spaces
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.1"/>
+
+
+        <Button
+            android:id="@+id/radioCategory"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="I'm leaving"
+            android:layout_weight="1"
+            />
+        //some spaces
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.1"/>
+
+        <Button
+            android:id="@+id/radioNearBy"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="Find A spot"
+            android:layout_weight="1"/>
+
+        //some spaces
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.1"/>
+
+    </RadioGroup>
+</FrameLayout>
